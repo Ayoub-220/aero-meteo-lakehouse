@@ -1,0 +1,17 @@
+.env
+.venv/
+venv/
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+logs/
+
+.vscode/
+
+*.json
+*.parquet
+*.csv
+spark-warehouse/
+
