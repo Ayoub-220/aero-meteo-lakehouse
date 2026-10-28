@@ -112,6 +112,14 @@ with DAG('bronze_elt_pipeline', start_date=datetime(2023, 1, 1), schedule_interv
     t2_bronze = PythonOperator(task_id='t2_extract_flights', python_callable=extract_aviationstack_flights, provide_context=True)
     t3_bronze = PythonOperator(task_id='t3_extract_weather', python_callable=extract_openmeteo_weather, provide_context=True)
     
+    t4_silver = BashOperator(
+        task_id='process_silver_layer',
+        bash_command=(
+            'spark-submit '
+            '--packages org.apache.hadoop:hadoop-aws:3.4.0,software.amazon.awssdk:bundle:2.23.19 '
+            '/opt/airflow/scripts/silver_transformation.py'
+        )
+    )
     
     # L'orchestration des tâches:
-    t0_init >> [t1_bronze, t2_bronze] >> t3_bronze
+    t0_init >> [t1_bronze, t2_bronze] >> t3_bronze >> t4_silver
